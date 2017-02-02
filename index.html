@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<title>DESAF&Iacute;O FRONT-END</title>
+		<meta charset="utf-8" />
+		<link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+	</head>
+	<body>
+		<header>
+			<p>PRUEBA T&Eacute;CNICA</p>
+			<h1>DESAF&Iacute;O FRONT-END</h1>
+		</header>
+		<div ng-app="FrontEnd" ng-controller="FrontEndControl">
+				<form ng-submit="agregarNumero()">
+					<input type="number" ng-model="Numero" min=1 required>
+					<input type="submit" value="Agregar">
+				</form>
+				<br/>
+				<button ng-click="prueba()">Prueba</button>
+				<button ng-click="limpiar()">Limpiar</button>
+				<button ng-click="ordenarTodos()">Ordenar</button>
+				<ul class="list-group numeros">
+					<li ng-repeat="numero in numeros" ng-animate="'numero'" class="numero list-group-item {{resaltarPosicion($index)}}">{{numero}}</li>
+				</ul>
+		</div>
+		
+		<script type='text/javascript'>//<![CDATA[
+			var app = angular.module('FrontEnd',[]);
+			app.controller('FrontEndControl', function($scope)
+			{
+				//inicializacion de variables
+				$scope.Numero = '';
+				$scope.numeroRepetido = true;
+				$scope.aviso = "";
+				$scope.numeros = [];
+				$scope.posicionTemp = 0;
+				$scope.posicion = 0;
+				
+				$scope.agregarNumero = function() 
+				{
+					$scope.aviso = "";
+					if (NoEsNumeroRepetido($scope.Numero)) 
+					{
+					  $scope.numeros.push($scope.Numero);
+					  $scope.Numero = '';
+					} 
+					else
+					{
+					  $scope.aviso = "aviso";
+					}
+				};
+				
+				$scope.ordenarTodos = function()
+				{
+					//llamando al bucle que pasara por cada numero
+					angular.forEach($scope.numeros, function(value, key)
+					{
+						buscar(key);
+					});
+				};
+				
+				//funcion ciclica para comparar entre si los numeros
+				function buscar(posicion)
+				{
+					var numero1 = $scope.numeros[posicion];
+					var numero2 = $scope.numeros[posicion - 1];
+					if (numero2 == null)
+					{
+						return;
+					}
+					if (numero1 < numero2)
+					{
+					  var temp = $scope.numeros[posicion - 1];
+					  $scope.numeros[posicion - 1] = $scope.numeros[posicion];
+					  $scope.numeros[posicion] = temp;
+					  return buscar(posicion - 1);
+					}
+				};
+				
+				$scope.limpiar = function()
+				{
+					$scope.numeros = [];
+					$scope.Numero = '';
+					$scope.numeroRepetido = false;
+					$scope.aviso = "";
+					$scope.posicion = 0;
+					$scope.posicionTemp = 0;
+				};
+				
+				$scope.prueba = function()
+				{
+					$scope.limpiar();
+					$scope.numeros = [10,8,2,25,12,22,7,1,15,9];
+				};
+			
+				function NoEsNumeroRepetido(value)
+				{
+					return $scope.numeros.indexOf(value) == -1;
+				}
+			});//]]> 
+		</script>
+	</body>
+</html>
